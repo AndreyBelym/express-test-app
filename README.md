@@ -1,6 +1,1 @@
-# Example
-
-To run this example:
-
-- `npm install` or `yarn`
-- `npm run dev` or `yarn dev`
+Для просмотра результатов открыть превью start:8080
