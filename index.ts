@@ -130,7 +130,7 @@ const createApp = (data: TData) => {
   // TODO:
   // 3. Реализовать обработчик /message
   // Тип Body: TMessage
-  // Принимает сообщение, и дипетчеризирует его.
+  // Принимает сообщение, и диcпетчеризирует его.
   // Примеры можно посмотреть в поле messages в data.json
   // 3а. payload сообщения должно быть отправлено всем получателям в routes
   //     Нужно по айдишникам получить данные получателей, затем для каждого получателя нужно получить данные маршрутов.
@@ -160,7 +160,10 @@ const createApp = (data: TData) => {
     await fetch("http://localhost:8080/message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload: {}, recipients: ["0", "1"] }),
+      body: JSON.stringify({
+        payload: { message: "Hello World" },
+        recipients: ["0", "1"],
+      }),
     });
 
     const result = await fetch("http://localhost:8080/tasks", {

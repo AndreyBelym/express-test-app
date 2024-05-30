@@ -55,6 +55,12 @@
       }
     }
   ],
+  "messages": [
+    {
+      "payload": { "message": "Hello World" },
+      "recipients": ["0", "1"]
+    }
+  ],
   "tasks": [
     {
       "type": "telegram",
