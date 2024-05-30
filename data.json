@@ -1,0 +1,94 @@
+{
+  "recipients": [
+    {
+      "id": "0",
+      "type": "user",
+      "name": "Alice",
+      "routes": ["0", "2"]
+    },
+    {
+      "id": "1",
+      "type": "user",
+      "name": "Bob",
+      "routes": ["1"]
+    },
+    {
+      "id": "2",
+      "type": "group",
+      "members": ["0", "1"]
+    }
+  ],
+  "routes": [
+    {
+      "id": "0",
+      "address": "@alice",
+      "provider": "0"
+    },
+    {
+      "id": "1",
+      "address": "@bob",
+      "provider": "0"
+    },
+    {
+      "id": "2",
+      "address": "alice@mail.com",
+      "provider": "1"
+    }
+  ],
+  "providers": [
+    {
+      "id": "0",
+      "name": "Telegram",
+      "type": "telegram",
+      "options": {
+        "token": "XXXXXX"
+      }
+    },
+    {
+      "id": "1",
+      "name": "EMail",
+      "type": "email",
+      "options": {
+        "server": "XXXXXX",
+        "user": "XXXXXX",
+        "pass": "XXXXXX"
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "type": "telegram",
+      "tasks": [
+        {
+          "payload": {
+            "message": "Hello World",
+            "recipient": "Alice"
+          },
+          "address": "@alice",
+          "provider": "0"
+        },
+        {
+          "payload": {
+            "message": "Hello World",
+            "recipient": "Bob"
+          },
+          "address": "@bob",
+          "provider": "0"
+        }
+      ]
+    },
+    {
+      "type": "email",
+      "tasks": [
+        {
+          "payload": {
+            "message": "Hello World",
+            "recipient": "Alice"
+          },
+          "address": "alice@mail.com",
+          "provider": "1"
+        }
+      ]
+    }
+  ]
+}
