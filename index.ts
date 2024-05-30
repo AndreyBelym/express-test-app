@@ -55,8 +55,6 @@ type TTaskGroup = {
 // TODO:
 // 2. Реализовать загрузку данных из файла data.json
 const loadData = async (): Promise<TData> => {
-  return require("./data.json");
-
   return {
     recipients: [],
     routes: [],
