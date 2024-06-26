@@ -1,67 +1,15 @@
 import express from "express";
 import bodyParser from "body-parser";
+import fs from "fs/promises";
+import { TData, TMessage, TTaskGroup } from "./types";
+import { createTasks } from "./task";
 
 process.env.TASKS_CHUNK_SIZE ||= "2";
 
-// TODO:
-// 1. Доработать описание типов на основе данных в data.json
-type TData = {
-  recipients: TRecipient[];
-  routes: TRoute[];
-  providers: TProvider[];
-  messages: TMessage[];
-  tasks: TTaskGroup[];
-};
-
-// TODO:
-// 1а. Доработать типизацию типа TRecipient - получатель.
-// Получатели бывают двух видов - пользователи и группы.
-// У пользователей есть свойство routes - список связанных айдишников маршрутов для отправки
-// У групп есть свойство members - список айдишек пользователей или других групп, входящих в данную группу
-type TRecipient = any;
-
-type TRoute = {
-  id: string;
-  address: string;
-  provider: string;
-};
-
-type TProvider = {
-  id: string;
-  name: string;
-  type: string;
-  options: any;
-};
-
-// 2а. Доработать типизацию типов TMessage, TTask, TTaskGroup,
-// чтобы свойство payload было строго типизированным (не any),
-// но при этом TMessage, TTask, TTaskGroup  можно было переиспользовать с разными вариантами типизации payload
-type TMessage = {
-  payload: any;
-  recipients: string[];
-};
-
-type TTask = {
-  payload: any & { recipient?: string };
-  address: string;
-  provider: string;
-};
-
-type TTaskGroup = {
-  type: string;
-  tasks: TTask[];
-};
-
-// TODO:
-// 2. Реализовать загрузку данных из файла data.json
 const loadData = async (): Promise<TData> => {
-  return {
-    recipients: [],
-    routes: [],
-    providers: [],
-    messages: [],
-    tasks: [],
-  };
+  const data = await fs.readFile('./data.json');
+
+  return JSON.parse(data.toString());
 };
 
 const createApp = (data: TData) => {
@@ -125,29 +73,14 @@ const createApp = (data: TData) => {
     res.json({ ok: true });
   });
 
-  /***** *****/
-
-  // TODO:
-  // 3. Реализовать обработчик /message
-  // Тип Body: TMessage
-  // Принимает сообщение, и диcпетчеризирует его.
-  // Примеры можно посмотреть в поле messages в data.json
-  // 3а. payload сообщения должно быть отправлено всем получателям в routes
-  //     Нужно по айдишникам получить данные получателей, затем для каждого получателя нужно получить данные маршрутов.
-  //     Из каждого маршрута нужно взять адрес и айдишку провайдера.
-  //     Вызвать метод /tasks, передать ему в поле tasks массив скомбинированных payload + address, provider
-  //     Обработку получателей-групп, заполнение поля type при вызове /tasks можно опустить
-  // 3b. Добавить обработку получателей-групп.
-  //     У таких получателей нет собственных маршрутов, но есть дочерние получатели.
-  //     При отправке сообщения группе, сообщение должно быть отправлено по маршрутам дочерних получателей.
-  //     Могут быть группы, у которых есть еще дочерние группы, вложенность не ограниченна.
-  // 3c. Добавлять при отправке payload поле recipient - имя (name) получателя, которому отправляется сообщение.
-  // 3d. При отправке группировать таски по полю type у провайдеров, указанных в маршрутах, и передавать его в метод /tasks
-  //     Т.е. Если у получателя есть маршрут на провайдер с типом email, и другой маршрут на провайдер с типом telegram,
-  //     должно быть два вызова /tasks - один с type: email и другой c type: telegram
-  // 3e. Сделать отправку не более process.env.TASKS_CHUNK_SIZE тасок за раз
-  app.post("/message", (req, res) => {
+  app.post("/message", async (req, res) => {
     const message: TMessage = req.body;
+
+    await fetch("http://localhost:8080/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(await createTasks(message)),
+    });
 
     res.json({ ok: true });
   });
@@ -161,7 +94,7 @@ const createApp = (data: TData) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        payload: { message: "Hello World" },
+        payload: { text: "Hello World" },
         recipients: ["0", "1"],
       }),
     });

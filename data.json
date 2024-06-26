@@ -57,17 +57,43 @@
   ],
   "messages": [
     {
-      "payload": { "message": "Hello World" },
+      "payload": { "text": "Hello World" },
       "recipients": ["0", "1"]
     }
   ],
   "tasks": [
     {
+      "payload": {
+        "text": "Hello World",
+        "recipient": "Alice"
+      },
+      "address": "@alice",
+      "provider": "0"
+    },
+    {
+      "payload": {
+        "text": "Hello World",
+        "recipient": "Bob"
+      },
+      "address": "@bob",
+      "provider": "0"
+    },
+    {
+      "payload": {
+        "text": "Hello World",
+        "recipient": "Alice"
+      },
+      "address": "alice@mail.com",
+      "provider": "1"
+    }
+  ],
+  "taskGroups": [
+    {
       "type": "telegram",
       "tasks": [
         {
           "payload": {
-            "message": "Hello World",
+            "text": "Hello World",
             "recipient": "Alice"
           },
           "address": "@alice",
@@ -75,7 +101,7 @@
         },
         {
           "payload": {
-            "message": "Hello World",
+            "text": "Hello World",
             "recipient": "Bob"
           },
           "address": "@bob",
@@ -88,7 +114,7 @@
       "tasks": [
         {
           "payload": {
-            "message": "Hello World",
+            "text": "Hello World",
             "recipient": "Alice"
           },
           "address": "alice@mail.com",
